@@ -4,12 +4,14 @@
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
+#include <iostream>
 
 // TamaÒo inicial de la ventana
 GLsizei winWidth =600, winHeight =600;
 
 GLubyte numeros[16] = { '0', '0', '1', '1','2', '2', '3', '3', '4','4',
     '5', '5', '6', '6', '7','7'};
+GLubyte expuesta[16] = { false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,};
 
 int decimas=0, segundos=0, dsegundos=0, minutos=0;
 bool pausa=true;
@@ -44,6 +46,9 @@ void display(){
             glColor3f(.33, .33, 1.0);
         }else{
             glColor3f(.13, .2, .6);
+        }
+        if (expuesta[x]){
+            glColor3f(.5,.2,.1);
         }
         glBegin(GL_QUADS);
             glVertex2d(75*x-600, 600);
@@ -111,6 +116,38 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 }
 
 
+void myMouse(int button, int state, int x, int y)
+{
+    int nx = 2*x;
+    int ny = 480 - y; // cambiar las coordenadas a coordenadas de openGL
+    if (state == GLUT_DOWN)
+    {
+        //Si el usuario oprime el boton izq del mouse
+        if (button == GLUT_LEFT_BUTTON)
+        {
+                int actual=nx/75;
+                expuesta[actual]=true;
+        }
+        else if (button == GLUT_RIGHT_BUTTON)
+        {
+        }
+        std::cout<<x<<" "<<y<<std::endl;
+    }
+    else
+        if (state == GLUT_UP)
+        {
+            if (button == GLUT_LEFT_BUTTON)
+            {
+                
+            }
+            else if (button == GLUT_RIGHT_BUTTON)
+            {
+            }
+        }
+}
+
+
+
 void init(void)
 {
     glClearColor(0,0,0,1.0);
@@ -121,12 +158,13 @@ void init(void)
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
-    glutInitWindowSize(640,480);
+    glutInitWindowSize(600,480);
     glutInitWindowPosition(10,10);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE ); //si pones el double tienes que poner glutswapbuffers
     glutCreateWindow("Animacion");
     glutDisplayFunc(display);
     init();
+    glutMouseFunc( myMouse );
     glutKeyboardFunc(myKeyboard);
     glutTimerFunc(100,myTimer,1);
     glutMainLoop();
