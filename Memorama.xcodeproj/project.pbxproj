@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		32F0EF331A8834A4001EA350 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32F0EF321A8834A4001EA350 /* main.cpp */; };
+		32F0EF3B1A88386E001EA350 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32F0EF391A88386E001EA350 /* GLUT.framework */; };
+		32F0EF3C1A88386E001EA350 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32F0EF3A1A88386E001EA350 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,8 @@
 /* Begin PBXFileReference section */
 		32F0EF2F1A8834A4001EA350 /* Memorama */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Memorama; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F0EF321A8834A4001EA350 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		32F0EF391A88386E001EA350 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		32F0EF3A1A88386E001EA350 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +36,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32F0EF3B1A88386E001EA350 /* GLUT.framework in Frameworks */,
+				32F0EF3C1A88386E001EA350 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +47,8 @@
 		32F0EF261A8834A3001EA350 = {
 			isa = PBXGroup;
 			children = (
+				32F0EF391A88386E001EA350 /* GLUT.framework */,
+				32F0EF3A1A88386E001EA350 /* OpenGL.framework */,
 				32F0EF311A8834A4001EA350 /* Memorama */,
 				32F0EF301A8834A4001EA350 /* Products */,
 			);
@@ -232,6 +240,7 @@
 				32F0EF381A8834A4001EA350 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
