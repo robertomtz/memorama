@@ -14,22 +14,26 @@ GLubyte numeros[16] = { '0', '0', '1', '1','2', '2', '3', '3', '4','4',
 GLubyte expuesta[16] = { false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,};
 
 int primerEscogido=-1; //si ya ha sido escogido una carta en el turno
+int turnos=0;
+int correctos = 0;
 
 int decimas=0, segundos=0, dsegundos=0, minutos=0;
 bool pausa=true;
 
 void myTimer(int i) {
-    if(!pausa){
-        decimas++;
-        if (decimas>9){
-            decimas=0;
-            segundos++;
-            if (segundos>9) {
-                segundos=0;
-                dsegundos++;
-                if (dsegundos>5) {
-                    dsegundos=0;
-                    minutos++;
+    if (correctos<8) {
+        if(!pausa){
+            decimas++;
+            if (decimas>9){
+                decimas=0;
+                segundos++;
+                if (segundos>9) {
+                    segundos=0;
+                    dsegundos++;
+                    if (dsegundos>5) {
+                        dsegundos=0;
+                        minutos++;
+                    }
                 }
             }
         }
@@ -42,6 +46,15 @@ void myTimer(int i) {
 void display(){
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    if (correctos==8){
+        glRasterPos2i(0,0);
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, 'F');
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, 'i');
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, 'n');
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, (char)(((int)'0')+turnos));
+        pausa=true;
+    }
     
     for(int x=0;x<17;x++){
         if(x%2==0){
@@ -72,6 +85,17 @@ void display(){
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':');
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+decimas));
     
+    glRasterPos2i(400,-500);
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'T');
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'u');
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'r');
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'n');
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'o');
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':');
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ' ');
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+turnos));
+    
+    
 //    glRasterPos2f(-600,.9f);
 //    for (int x=0; x<16;x++){
 //        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, numeros[x]);
@@ -88,8 +112,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 {
     switch (theKey)
     {
-        case 'd':
-        case 'D':
+        case 'p':
+        case 'P':
             if(pausa){ //continue time
                 pausa = false;
             }
@@ -125,17 +149,20 @@ void myMouse(int button, int state, int x, int y)
         //Si el usuario oprime el boton izq del mouse
         if (button == GLUT_LEFT_BUTTON)
         {
-            if (y<=85){
-                int actual=(2*x)/75;
-                if(!expuesta[actual]){
-                    expuesta[actual]=true;
-                    if(primerEscogido==-1){
-                        primerEscogido=actual;
-                    }else{
-                        if (!(numeros[actual]==numeros[primerEscogido])) {
-                            expuesta[actual]=expuesta[primerEscogido]=false;
+            if (!pausa) {
+                if (y<=85){
+                    int actual=(2*x)/75;
+                    if(!expuesta[actual]){
+                        expuesta[actual]=true;
+                        if(primerEscogido==-1){
+                            primerEscogido=actual;
+                        }else{
+                            if (!(numeros[actual]==numeros[primerEscogido])) {
+                                expuesta[actual]=expuesta[primerEscogido]=false;
+                            }else{correctos++;}
+                            primerEscogido=-1;
+                            turnos++;
                         }
-                        primerEscogido=-1;
                     }
                 }
             }
