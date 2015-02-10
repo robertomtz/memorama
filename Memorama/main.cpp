@@ -11,7 +11,9 @@ GLsizei winWidth =600, winHeight =600;
 
 GLubyte numeros[16] = { '0', '0', '1', '1','2', '2', '3', '3', '4','4',
     '5', '5', '6', '6', '7','7'};
-GLubyte expuesta[16] = { false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,};
+GLubyte expuesta[16] = { false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,};
+
+int primerEscogido=-1; //si ya ha sido escogido una carta en el turno
 
 int decimas=0, segundos=0, dsegundos=0, minutos=0;
 bool pausa=true;
@@ -118,15 +120,25 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 
 void myMouse(int button, int state, int x, int y)
 {
-    int nx = 2*x;
-    int ny = 480 - y; // cambiar las coordenadas a coordenadas de openGL
     if (state == GLUT_DOWN)
     {
         //Si el usuario oprime el boton izq del mouse
         if (button == GLUT_LEFT_BUTTON)
         {
-                int actual=nx/75;
-                expuesta[actual]=true;
+            if (y<=85){
+                int actual=(2*x)/75;
+                if(!expuesta[actual]){
+                    expuesta[actual]=true;
+                    if(primerEscogido==-1){
+                        primerEscogido=actual;
+                    }else{
+                        if (!(numeros[actual]==numeros[primerEscogido])) {
+                            expuesta[actual]=expuesta[primerEscogido]=false;
+                        }
+                        primerEscogido=-1;
+                    }
+                }
+            }
         }
         else if (button == GLUT_RIGHT_BUTTON)
         {
