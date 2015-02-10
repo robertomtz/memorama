@@ -7,7 +7,7 @@
 #include <iostream>
 #include <sstream>
 
-// TamaÒo inicial de la ventana
+// Tamano inicial de la ventana
 GLsizei winWidth =600, winHeight =600;
 
 GLubyte numeros[16] = { '0', '0', '1', '1','2', '2', '3', '3', '4','4',
@@ -98,24 +98,10 @@ void display(){
     }
     
     glColor3ub(0,255,155);
-    glRasterPos2i(-500,-300);
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+minutos));
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+dsegundos));
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+segundos));
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+decimas));
+    drawText(-500, -300, toString(minutos) + ":" + toString(dsegundos) + toString(segundos) + ":" + toString(decimas), GLUT_BITMAP_9_BY_15);
     
-    glRasterPos2i(400,-300);
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'T');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'u');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'r');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'n');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'o');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ' ');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+turnos));//bug
-    
+    drawText(400, -300, "Turnos: " + toString(turnos), GLUT_BITMAP_9_BY_15);
+//    
     
     drawText(-500, -400, "Autores: Roberto Mtz y Adrian Rangel", GLUT_BITMAP_HELVETICA_18);
     drawText(-500, -450, "I-Iniciar, P-Pausa, R-Reiniciar, Esc-Salir", GLUT_BITMAP_HELVETICA_18);
