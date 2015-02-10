@@ -5,6 +5,7 @@
 #include <math.h>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 // TamaÒo inicial de la ventana
 GLsizei winWidth =600, winHeight =600;
@@ -16,9 +17,22 @@ GLubyte expuesta[16] = { false,false,false,false,false,false,false,false,false,f
 int primerEscogido=-1; //si ya ha sido escogido una carta en el turno
 int turnos=0;
 int correctos = 0;
+int actual=-1;
+int antepenultimo=-1;
 
 int decimas=0, segundos=0, dsegundos=0, minutos=0;
 bool pausa=true;
+bool inicio=false;
+bool equivoco=false;
+
+void drawText(float x, float y, std::string text, void* font) {
+    glRasterPos3f(x, y, 0);
+    for (std::string::iterator i = text.begin(); i != text.end(); ++i)
+    {
+        char c = *i;
+        glutBitmapCharacter(font, c);
+    }
+}
 
 void myTimer(int i) {
     if (correctos<8) {
@@ -42,6 +56,12 @@ void myTimer(int i) {
     glutTimerFunc(100,myTimer,1);
 }
 
+std::string toString(int value) {
+    std::stringstream ss;
+    ss << value;
+    return ss.str();
+}
+
 
 void display(){
     
@@ -49,10 +69,9 @@ void display(){
     
     if (correctos==8){
         glRasterPos2i(0,0);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, 'F');
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, 'i');
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, 'n');
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, (char)(((int)'0')+turnos));
+        drawText(-500, 0, "Felicidades, lo lograste en ", GLUT_BITMAP_TIMES_ROMAN_24);
+        drawText(50, 0, toString(turnos), GLUT_BITMAP_TIMES_ROMAN_24);
+        drawText(100, 0, " turnos!", GLUT_BITMAP_TIMES_ROMAN_24);
         pausa=true;
     }
     
@@ -73,11 +92,13 @@ void display(){
         glEnd();
         glColor3f(1, 1, 1);
         glRasterPos2f(75*x-575,500);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, numeros[x]);
+        if (expuesta[x]) {
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, numeros[x]);
+        }
     }
     
     glColor3ub(0,255,155);
-    glRasterPos2i(-500,-500);
+    glRasterPos2i(-500,-300);
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+minutos));
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':');
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+dsegundos));
@@ -85,7 +106,7 @@ void display(){
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':');
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+decimas));
     
-    glRasterPos2i(400,-500);
+    glRasterPos2i(400,-300);
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'T');
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'u');
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'r');
@@ -93,7 +114,11 @@ void display(){
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'o');
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':');
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ' ');
-    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+turnos));
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (char)(((int)'0')+turnos));//bug
+    
+    
+    drawText(-500, -400, "Autores: Roberto Mtz y Adrian Rangel", GLUT_BITMAP_HELVETICA_18);
+    drawText(-500, -450, "I-Iniciar, P-Pausa, R-Reiniciar, Esc-Salir", GLUT_BITMAP_HELVETICA_18);
     
     
 //    glRasterPos2f(-600,.9f);
@@ -114,15 +139,18 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
     {
         case 'p':
         case 'P':
-            if(pausa){ //continue time
-                pausa = false;
-            }
-            else{
-                pausa = true;
+            if(inicio){
+                if(pausa){ //continue time
+                    pausa = false;
+                }
+                else{
+                    pausa = true;
+                }
             }
             break;
         case 'i':
         case 'I':
+            inicio=true;
             pausa = false;
             std::random_shuffle(&numeros[0], &numeros[16]);
             break;
@@ -131,9 +159,14 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
         case 'r': //resets time to zero
             pausa = true;
             decimas=0, segundos=0, dsegundos=0, minutos=0;
+            std::random_shuffle(&numeros[0], &numeros[16]);
+            turnos=0;
+            correctos=0;
+            for (int a=0;a<16;a++){
+                expuesta[a]=false;
+            }
             break;
-        case 'E':
-        case 'e':
+        case 27:
             exit(-1);
             //terminate the program
         default:
@@ -151,15 +184,22 @@ void myMouse(int button, int state, int x, int y)
         {
             if (!pausa) {
                 if (y<=85){
-                    int actual=(2*x)/75;
+                    if (equivoco){
+                        expuesta[actual]=expuesta[antepenultimo]=false;
+                        equivoco=false;
+                    }
+                    actual=(2*x)/75;
                     if(!expuesta[actual]){
                         expuesta[actual]=true;
                         if(primerEscogido==-1){
                             primerEscogido=actual;
                         }else{
                             if (!(numeros[actual]==numeros[primerEscogido])) {
-                                expuesta[actual]=expuesta[primerEscogido]=false;
-                            }else{correctos++;}
+                                equivoco=true;
+                                antepenultimo=primerEscogido;
+                            }else{
+                                correctos++;
+                            }
                             primerEscogido=-1;
                             turnos++;
                         }
