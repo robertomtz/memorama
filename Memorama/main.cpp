@@ -12,7 +12,7 @@ GLsizei winWidth =600, winHeight =600;
 
 int iDibujo, iFondo;
 
-GLubyte numeros[16] = { '0', '0', '1', '1','2', '2', '3', '3', '4','4',
+char numeros[16] = { '0', '0', '1', '1','2', '2', '3', '3', '4','4',
     '5', '5', '6', '6', '7','7'};
 GLubyte expuesta[16] = { false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,};
 
@@ -330,6 +330,22 @@ std::string toString(int value) {
     return ss.str();
 }
 
+void draw3dString (void *font, char s, float x, float y, float z)
+{
+    unsigned int i;
+    glMatrixMode(GL_MODELVIEW);
+    
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    
+        glScaled(1, 1.5, 0);
+    
+    //if (!dibujaPortada && opcion ==1)  glRotatef(45, 1, 0, 0);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, s);
+    glPopMatrix();
+}
+
+
 
 void display(){
     
@@ -350,7 +366,7 @@ void display(){
             glColor3f(.13, .2, .6);
         }
         if (expuesta[x]){
-            glColor3f(.5,.9,.1);
+            glColor3f(.4,.2,.1);
             glEnable (GL_POLYGON_STIPPLE);
             glPolygonStipple(patron[numeros[x]-'0' -1]);
             
@@ -365,7 +381,11 @@ void display(){
             glRasterPos2f(150*(x-8)-575,250);
         }
         if (expuesta[x]) {
-            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, numeros[x]);
+            if(x<8){
+                draw3dString(GLUT_STROKE_MONO_ROMAN,numeros[x],150*x-575,425, 0);
+            }else{
+                draw3dString(GLUT_STROKE_MONO_ROMAN,numeros[x],150*(x-8)-575,175, 0);
+            }
         }
         glDisable (GL_POLYGON_STIPPLE);
     }
