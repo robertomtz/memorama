@@ -10,6 +10,8 @@
 // Tamano inicial de la ventana
 GLsizei winWidth =600, winHeight =600;
 
+int iDibujo, iFondo;
+
 GLubyte numeros[16] = { '0', '0', '1', '1','2', '2', '3', '3', '4','4',
     '5', '5', '6', '6', '7','7'};
 GLubyte expuesta[16] = { false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,};
@@ -431,6 +433,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
         case 27:
             exit(-1);
             //terminate the program
+            break;
             
         case 'A':
         case 'a':
@@ -520,6 +523,65 @@ void myMouse(int button, int state, int x, int y)
 }
 
 
+void onMenu(int opcion) {
+    switch(opcion) {
+        case 1:
+            inicio=true;
+            pausa = false;
+            std::random_shuffle(&numeros[0], &numeros[16]);
+            break;
+        case 2:
+            pausa = true;
+            decimas=0, segundos=0, dsegundos=0, minutos=0;
+            std::random_shuffle(&numeros[0], &numeros[16]);
+            turnos=0;
+            correctos=0;
+            for (int a=0;a<16;a++){
+                expuesta[a]=false;
+            }
+            break;
+        case 3:
+            if(inicio){
+                pausa=!pausa;
+            }
+            break;
+        case 4: // Blanco 3
+            if(inicio){
+                trampa=!trampa;
+            }
+            break;
+        case 5:
+            exit(-1);
+            //terminate the program
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+        
+            
+    }
+    glutPostRedisplay();
+}
+
+
+void creacionMenu(void) {
+    int menuPrincipal, autores;
+    
+    autores = glutCreateMenu(onMenu);
+    glutAddMenuEntry("Roberto Mtz", 6);
+    glutAddMenuEntry("Adrian Rangel", 7);
+    
+    menuPrincipal = glutCreateMenu(onMenu);
+    glutAddMenuEntry("Iniciar", 1);
+    glutAddMenuEntry("Reiniciar", 2);
+    glutAddMenuEntry("Pausa", 3);
+    glutAddMenuEntry("Ayuda (trampa)", 4);
+    glutAddMenuEntry("Salir", 5);
+    glutAddSubMenu("Autores", autores);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+
 
 void init(void)
 {
@@ -540,6 +602,7 @@ int main(int argc, char** argv)
     glutMouseFunc( myMouse );
     glutKeyboardFunc(myKeyboard);
     glutTimerFunc(100,myTimer,1);
+    creacionMenu( );
     glutMainLoop();
     return EXIT_SUCCESS;
 }
