@@ -348,9 +348,9 @@ void display(){
             glColor3f(.13, .2, .6);
         }
         if (expuesta[x]){
-//            glColor3f(.5,.9,.1);
+            glColor3f(.5,.9,.1);
             glEnable (GL_POLYGON_STIPPLE);
-            glPolygonStipple(patron[numeros[x]]);
+            glPolygonStipple(patron[numeros[x]-'0' -1]);
             
         }
         if(x<8){
