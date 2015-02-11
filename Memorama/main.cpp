@@ -75,7 +75,7 @@ void display(){
         pausa=true;
     }
     
-    for(int x=0;x<17;x++){
+    for(int x=0;x<16;x++){
         if(x%2==0){
             glColor3f(.33, .33, 1.0);
         }else{
@@ -84,14 +84,25 @@ void display(){
         if (expuesta[x]){
             glColor3f(.5,.2,.1);
         }
-        glBegin(GL_QUADS);
-            glVertex2d(75*x-600, 600);
-            glVertex2d(75*x-600, 400);
-            glVertex2d(75*x-525, 400);
-            glVertex2d(75*x-525, 600);
-        glEnd();
-        glColor3f(1, 1, 1);
-        glRasterPos2f(75*x-575,500);
+        if(x<8){
+            glBegin(GL_QUADS);
+                glVertex2d(150*x-600, 600);
+                glVertex2d(150*x-600, 400);
+                glVertex2d(150*x-450, 400);
+                glVertex2d(150*x-450, 600);
+            glEnd();
+            glColor3f(1, 1, 1);
+            glRasterPos2f(150*x-575,500);
+        } else{
+            glBegin(GL_QUADS);
+            glVertex2d(150*(x-8)-600, 350);
+            glVertex2d(150*(x-8)-600, 150);
+            glVertex2d(150*(x-8)-450, 150);
+            glVertex2d(150*(x-8)-450, 350);
+            glEnd();
+            glColor3f(1, 1, 1);
+            glRasterPos2f(150*(x-8)-575,250);
+        }
         if (expuesta[x]) {
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, numeros[x]);
         }
@@ -152,6 +163,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
                 expuesta[a]=false;
             }
             break;
+        case 'Q':
+        case 'q':        
         case 27:
             exit(-1);
             //terminate the program
@@ -174,7 +187,7 @@ void myMouse(int button, int state, int x, int y)
                         expuesta[actual]=expuesta[antepenultimo]=false;
                         equivoco=false;
                     }
-                    actual=(2*x)/75;
+                    actual=(2*x)/150;
                     if(!expuesta[actual]){
                         expuesta[actual]=true;
                         if(primerEscogido==-1){
@@ -190,8 +203,31 @@ void myMouse(int button, int state, int x, int y)
                             turnos++;
                         }
                     }
+                } else if (y<=185){
+                    if (equivoco){
+                        expuesta[actual]=expuesta[antepenultimo]=false;
+                        equivoco=false;
+                    }
+                    actual=8+(2*x)/150;
+                    if(!expuesta[actual]){
+                        expuesta[actual]=true;
+                        if(primerEscogido==-1){
+                            primerEscogido=actual;
+                        }else{
+                            if (!(numeros[actual]==numeros[primerEscogido])) {
+                                equivoco=true;
+                                antepenultimo=primerEscogido;
+                            }else{
+                                correctos++;
+                            }
+                            primerEscogido=-1;
+                            turnos++;
+                        }
+                        
+                    }else{}
                 }
             }
+            
         }
         else if (button == GLUT_RIGHT_BUTTON)
         {
