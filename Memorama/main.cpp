@@ -289,6 +289,7 @@ int decimas=0, segundos=0, dsegundos=0, minutos=0;
 bool pausa=true;
 bool inicio=false;
 bool equivoco=false;
+bool trampa=false;
 
 void drawText(float x, float y, std::string text, void* font) {
     glRasterPos3f(x, y, 0);
@@ -376,14 +377,22 @@ void display(){
     drawText(-500, -400, "Autores: Roberto Mtz y Adrian Rangel", GLUT_BITMAP_HELVETICA_18);
     drawText(-500, -450, "I-Iniciar, P-Pausa, R-Reiniciar, Esc-Salir", GLUT_BITMAP_HELVETICA_18);
     
+    if(trampa){
+        for (int a=0; a<16; a++){
+            if (a<8) {
+                glRasterPos2f(150*a-480,550);
+                glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, numeros[a]);
+            }else{
+                glRasterPos2f(150*(a-8)-480,300);
+                glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, numeros[a]);
+            }
+        }
+    }
     
 //    glRasterPos2f(-600,.9f);
 //    for (int x=0; x<16;x++){
 //        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, numeros[x]);
 //    }
-    
-    
-    
     glutSwapBuffers();//ya tiene integrado el glFlush
     
 }
@@ -396,12 +405,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
         case 'p':
         case 'P':
             if(inicio){
-                if(pausa){ //continue time
-                    pausa = false;
-                }
-                else{
-                    pausa = true;
-                }
+                pausa=!pausa;
             }
             break;
         case 'i':
@@ -423,10 +427,19 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
             }
             break;
         case 'Q':
-        case 'q':        
+        case 'q':
         case 27:
             exit(-1);
             //terminate the program
+            
+        case 'A':
+        case 'a':
+            if(inicio){
+                trampa=!trampa;
+            }
+            break;
+            
+            
         default:
             break;		      // do nothing
     }
