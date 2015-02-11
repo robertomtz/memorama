@@ -8,9 +8,7 @@
 #include <sstream>
 
 // Tamano inicial de la ventana
-GLsizei winWidth =600, winHeight =600;
-
-int iDibujo, iFondo;
+double winWidth =600.0, winHeight =480.0;
 
 char numeros[16] = { '0', '0', '1', '1','2', '2', '3', '3', '4','4',
     '5', '5', '6', '6', '7','7'};
@@ -471,6 +469,12 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 
 void myMouse(int button, int state, int x, int y)
 {
+    double factx= winWidth/glutGet(GLUT_WINDOW_WIDTH);
+    double facty= winHeight/glutGet(GLUT_WINDOW_HEIGHT);
+    
+    y=y*facty;
+    x=x*factx;
+    
     if (state == GLUT_DOWN)
     {
         //Si el usuario oprime el boton izq del mouse
